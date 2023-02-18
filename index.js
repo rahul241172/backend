@@ -5,7 +5,9 @@ const {users}=require("./routes/user.router")
 const {notes}=require("./routes/notes.router")
 var cors = require('cors')
 const app=express()
-app.use(cors())
+app.use(cors({
+    origin:"*"
+}))
 app.use(express.json())
 
 require("dotenv").config()
@@ -16,7 +18,9 @@ app.use("/notes",notes)
 
 app.get("/",(req,res)=>{
     console.log("welcome")
-    res.send("Hello")
+    res.send({
+        "msg":"this is response"
+    })
 })
 
 
