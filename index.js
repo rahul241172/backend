@@ -25,12 +25,19 @@ app.get("/",(req,res)=>{
 
 
 
-app.listen(process.env.port,async()=>{
+const connect=async()=>{
     try{
-       await connection
-       console.log("server running")
+        await connection
     }
     catch(err){
         console.log(err)
     }
+}
+
+
+connect().then(()=>{
+app.listen(process.env.port,()=>{
+       console.log("server running")
+  
+})
 })
