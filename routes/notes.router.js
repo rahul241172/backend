@@ -1,7 +1,7 @@
 const express=require("express")
-const notes=express.Router()
-const mongoose=require("mongoose")
 const {NoteModel}=require("../models/Notes.model")
+const notes=express.Router()
+
 const {authorization}=require("../middleware/authorization")
 
 
@@ -15,28 +15,29 @@ notes.get("/",authorization,async(req,res)=>{
             })
 
 notes.post("/create",authorization,async(req,res)=>{
-let {title,author,about,userId}=req.body
+const payload=req.body
 try{
-    let data=new NoteModel({title,author,about,userId})
+    let data=new NoteModel(payload)
     await data.save()
     res.send("created note sucessfully")
 }catch(err){
     console.log(err)
+    res.send({"msg":"something went wrong"})
 }
 })
 
 notes.patch("/update/:id",authorization,async(req,res)=>{
-    let q=req.body
+    let payload=req.body
     let id=req.params.id
     let note=await NoteModel.findOne({"_id":id})
-    let user=note.userId
-    let user_making_req=req.body.userId
+    let user=note.userID
+    let user_making_req=req.body.userID
     try{
         if(user!=user_making_req){
             res.send("you are not authorized")  
         }
         else{
-            let data=await NoteModel.findByIdAndUpdate({"_id":id},q)
+            let data=await NoteModel.findByIdAndUpdate({"_id":id},payload)
             res.send("updated")
         }
     }catch(err){
@@ -45,11 +46,11 @@ notes.patch("/update/:id",authorization,async(req,res)=>{
     })
 
     notes.delete("/delete/:id",authorization,async(req,res)=>{
-        let q=req.body
+        let payload=req.body
     let id=req.params.id
     let note=await NoteModel.findOne({_id:id})
-    let user=note.userId
-    let user_making_req=req.body.userId
+    let user=note.userID
+    let user_making_req=req.body.userID
     try{
         if(user==user_making_req){
             let data=await NoteModel.findByIdAndDelete({_id:id})

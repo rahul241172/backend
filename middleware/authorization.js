@@ -8,8 +8,8 @@ const authorization=(req,res,next)=>{
         jwt.verify(token,process.env.jwtsecret,async(err, decoded)=>{
             if(decoded){
                 // console.log(decoded)
-                const userId=decoded.userId
-                req.body.userId=userId
+                const userID=decoded.userID
+                req.body.userID=userID
                 next()
             }
             else{
